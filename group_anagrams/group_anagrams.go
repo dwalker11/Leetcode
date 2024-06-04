@@ -8,6 +8,12 @@ func (a SortBy) Len() int           { return len(a) }
 func (a SortBy) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a SortBy) Less(i, j int) bool { return a[i] < a[j] }
 
+func sortWord(str string) string {
+	s := []rune(str)
+	sort.Sort(SortBy(s))
+	return string(s)
+}
+
 func groupAnagrams(strs []string) [][]string {
 	var result [][]string
 
@@ -40,8 +46,11 @@ func groupAnagrams(strs []string) [][]string {
 	return result
 }
 
-func sortWord(str string) string {
-	s := []rune(str)
-	sort.Sort(SortBy(s))
-	return string(s)
-}
+// func getKey(word string) [26]rune {
+// 	key := [26]rune{}
+	// for _, c := range word {
+		// i := something // find it's value in the key array
+		// key[i] += 1
+	// }
+// 	return key
+// }

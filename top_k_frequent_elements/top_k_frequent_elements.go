@@ -6,17 +6,20 @@ func topKFrequent(nums []int, k int) []int {
 	numMap := make(map[int]int)
 
 	for _, num := range nums {
-		if _, ok := numMap[num]; !ok {
-			numMap[num] = 0
-		}
-
 		numMap[num] += 1
 	}
 
-	for num, numCount := range numMap {
-		if numCount >= k {
-			result = append(result, num)
+	for i := 0; i < k; i++ {
+		var largest int
+
+		for num, count := range numMap {
+			if count > numMap[largest] {
+				largest = num
+			}
 		}
+
+		result = append(result, largest)
+		delete(numMap, largest)
 	}
 
 	return result

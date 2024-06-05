@@ -4,22 +4,24 @@ func topKFrequent(nums []int, k int) []int {
 	var result []int
 
 	numMap := make(map[int]int)
-
 	for _, num := range nums {
 		numMap[num] += 1
 	}
 
-	for i := 0; i < k; i++ {
-		var largest int
+	buckets := make([][]int, len(nums) + 1)
+	for num, count := range numMap {
+		buckets[count] = append(buckets[count], num)
+	}
 
-		for num, count := range numMap {
-			if count > numMap[largest] {
-				largest = num
+outer:
+	for i := len(buckets) - 1; i >= 0; i-- {
+		for _, v := range buckets[i] {
+			if len(result) == k {
+				break outer
 			}
-		}
 
-		result = append(result, largest)
-		delete(numMap, largest)
+			result = append(result, v)
+		}
 	}
 
 	return result

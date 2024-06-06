@@ -2,21 +2,20 @@ package productofarrayexceptself
 
 func productExceptSelf(nums []int) []int {
 	result := make([]int, len(nums))
-
 	for i := range result {
 		result[i] = 1
 	}
 
-	prevProduct := nums[0]
+	prefix := 1
+	for i := 0; i < len(nums); i++ {
+		result[i] = prefix
+		prefix *= nums[i]
+	}
 
-	for i := 1; i < len(nums); i++ {
-		result[i] = prevProduct
-
-		for j := i - 1; j >= 0; j-- {
-			result[j] *= nums[i]
-		}
-
-		prevProduct *= nums[i]
+	postfix := 1
+	for i := len(nums) - 1; i >= 0; i-- {
+		result[i] *= postfix
+		postfix *= nums[i]
 	}
 
 	return result

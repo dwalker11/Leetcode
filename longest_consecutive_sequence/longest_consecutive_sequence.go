@@ -1,43 +1,34 @@
 package longestconsecutivesequence
 
-import (
-	"fmt"
-	"math"
-)
-
-type node struct {
-	val  int
-	next *node
-}
+type set map[int]bool
 
 func longestConsecutive(nums []int) int {
-	head := &node{}
-
+	numSet := make(set)
 	for _, v := range nums {
-		curr := head
-		for curr.next != nil && v > curr.next.val {
-			curr = curr.next
-		}
-
-		curr.next = &node{val: v, next: curr.next}
+		numSet[v] = true
 	}
 
-	max_consecutive, consecutive := 1, 1
-
-	curr := head.next
-	for curr.next != nil {
-		if curr.next.val-curr.val == 1 {
-			consecutive++
-		} else {
-			max_consecutive = int(math.Max(float64(max_consecutive), float64(consecutive)))
-			consecutive = 0
+	maxSequenceLength := 0
+	for _, v := range nums {
+		if setHasElement(numSet, v-1) {
+			continue
 		}
 
-		curr = curr.next
+		i, sequenceLength := v, 0
+		for setHasElement(numSet, i) {
+			sequenceLength++
+			i++
+		}
+
+		if sequenceLength > maxSequenceLength {
+			maxSequenceLength = sequenceLength
+		}
 	}
 
-	fmt.Println()
-	max_consecutive = int(math.Max(float64(max_consecutive), float64(consecutive)))
+	return maxSequenceLength
+}
 
-	return max_consecutive
+func setHasElement(collection set, element int) bool {
+	_, ok := collection[element]
+	return ok
 }

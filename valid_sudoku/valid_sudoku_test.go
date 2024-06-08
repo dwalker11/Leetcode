@@ -2,9 +2,20 @@ package validsudoku
 
 import "testing"
 
-func TestXxx(t *testing.T) {
-	var board [][]byte
-
-	board = [][]byte{}
-	isValidSudoku(board)
+func TestIsValidSudoku(t *testing.T) {
+	board := [][]byte{
+		{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+		{'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+		{'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+		{'8', '.', '.', '.', '6', '.', '.', '.', '3'},
+		{'4', '.', '.', '8', '.', '3', '.', '.', '1'},
+		{'7', '.', '.', '.', '2', '.', '.', '.', '6'},
+		{'.', '6', '.', '.', '.', '.', '2', '8', '.'},
+		{'.', '.', '.', '4', '1', '9', '.', '.', '5'},
+		{'.', '.', '.', '.', '8', '.', '.', '7', '9'},
+	}
+	
+	if result := isValidSudoku(board); !result {
+		t.Errorf("Expected %v got %v", true, result)
+	}
 }

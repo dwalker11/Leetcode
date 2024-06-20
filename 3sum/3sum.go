@@ -3,37 +3,34 @@ package three_sum
 import "slices"
 
 func threeSum(nums []int) [][]int {
-	numsMap := make(map[int][]int)
-	for i, v := range nums {
-		if s, ok := numsMap[v]; !ok {
-			numsMap[v] = []int{i}
-		} else {
-			numsMap[v] = append(s, i)
-		}
-	}
+	var results [][]int
 
-	solutionSet := make(map[[3]int]bool)
-	for i := 0; i < len(nums); i++ {
-		for j := i + 1; j < len(nums); j++ {
-			test := (nums[i] + nums[j]) * -1
-			if indicies, ok := numsMap[test]; ok {
-				for _, k := range indicies {
-					if k == i || k == j {
-						continue
-					}
-					var key [3]int
-					s := []int{nums[i], nums[j], nums[k]}
-					slices.Sort(s)
-					copy(key[:], s)
-					solutionSet[key] = true
+	slices.Sort(nums)
+
+	for i := range nums {
+		// ...skip if current is equal to previous
+		if i != 0 && nums[i] == nums[i-1] {
+			continue
+		}
+
+		l, r := i+1, len(nums)-1
+		for l < r {
+			sum := nums[i] + nums[l] + nums[r]
+
+			if sum < 0 {
+				l++
+			} else if sum > 0 {
+				r--
+			} else {
+				results = append(results, []int{nums[i], nums[l], nums[r]})
+				l++
+
+				// while l is not equal to the previous l
+				for nums[l] == nums[l - 1] && l < r {
+					l++
 				}
 			}
 		}
-	}
-
-	var results [][]int
-	for k := range solutionSet {
-		results = append(results, k[:])
 	}
 
 	return results

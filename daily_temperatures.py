@@ -1,17 +1,22 @@
 def dailyTemperature(temps):
-    results = []
+    results = [0 for _ in temps]
+    stack = []
 
-    def nextWarmTemp(temp, index, count):
-        if index == len(temps):
-            return 0
-        elif temps[index] > temp:
-            return count
-        else:
-            return nextWarmTemp(temp, index + 1, count + 1)
+    def nextWarmTemp(index):
+        while stack:
+            top = stack[-1]
 
-    for index, temp in enumerate(temps):
-        num_of_days = nextWarmTemp(temp, index + 1, 1)
-        results.append(num_of_days)
+            if temps[top] > temps[index]:
+                stack.append(index)
+                return top - index
+
+            stack.pop()
+
+        stack.append(index)
+        return 0
+
+    for index in range(len(temps) - 1, -1, -1):
+        results[index] = nextWarmTemp(index)
     
     print(temps)
     print(results)

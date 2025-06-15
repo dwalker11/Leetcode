@@ -1,5 +1,7 @@
-from typing import List
 import heapq
+
+from collections import deque
+from typing import List
 
 
 def leastInterval(tasks: List[str], n: int) -> int:
@@ -12,55 +14,47 @@ def leastInterval(tasks: List[str], n: int) -> int:
         else:
             lookup[task] += 1
 
-    h = []
-
     # Create a priority queue with the task and the frequency of every task
-    for task in lookup:
-        heapq.heappush(h, (-lookup[task], task))
+    h = [-freq for freq in lookup.values()]
+    heapq.heapify(h)
 
-    h2 = []
+    q = deque()
 
-    i, s = 0, set()
-    while h:
-        # find the next available position
-        while i in s:
-            i += 1
+    time = 0
+    while h or q:
+        time += 1
 
-        frequency, task = heapq.heappop(h)
+        if h:
+            # pop task off of the queue and decrement it's frequency
+            count = heapq.heappop(h) + 1
 
-        j = i
-        for _ in range(-frequency):
-            heapq.heappush(h2, (j, task))
-            s.add(j)
-            j += n + 1
+            # add to the queue if count is greater than 0
+            if count < 0:
+                q.append((count, time + n))
 
-    output = []
+        if q:
+            # if the cool-down time is equal to the current time
+            count, cooldown_time = q[0]
+            if cooldown_time == time:
+                # push the task at top of the queue into the heap
+                heapq.heappush(h, count)
+                q.popleft()
 
-    i = 0
-    while h2:
-        p, task = h2[0]
-
-        if p > i:
-            output.append("idle")
-        else:
-            output.append(task)
-            heapq.heappop(h2)
-
-        i += 1
-
-    print(output)
-
-    return len(output)
+    return time
 
 
 input = ["B", "C", "D", "A", "A", "A", "A", "G"]
-leastInterval(input, 1)
+res = leastInterval(input, 1)
+print(res)
 
 input = ["A", "C", "A", "B", "D", "B"]
-leastInterval(input, 1)
+res = leastInterval(input, 1)
+print(res)
 
 input = ["A", "A", "A", "B", "B", "B"]
-leastInterval(input, 2)
+res = leastInterval(input, 2)
+print(res)
 
 input = ["A", "A", "A", "B", "B", "B"]
-leastInterval(input, 3)
+res = leastInterval(input, 3)
+print(res)

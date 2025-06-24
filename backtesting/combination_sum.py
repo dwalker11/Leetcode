@@ -2,32 +2,28 @@ from typing import List
 
 
 def combinationSum(candidates: List[int], target: int) -> List[List[int]]:
-    result = []
+    results = []
 
-    def dfs(available_candidates, s):
-        t = sum(s)
-
-        if t > target:
+    def dfs(i, s, t):
+        if i >= len(candidates) or t > target:
             return
 
         if t == target:
-            c = s[-1]
-            available_candidates.remove(c)
-            return result.append(s)
+            return results.append(s.copy())
 
-        for c in candidates:
-            if c in available_candidates:
-                dfs(available_candidates, [*s, c])
+        c = candidates[i]
+        s.append(c)
+        dfs(i, s, t + c)
+        s.pop()
+        dfs(i+1, s, t)
 
-    for i, _ in enumerate(candidates):
-        x = candidates[i:]
-        dfs(set(x), [])
+    dfs(0, [], 0)
 
-    return result
+    return results
 
 
 def main():
-    results = combinationSum([2], 1)  # [1, 2] [2,3,5] [2, 3, 6, 7]
+    results = combinationSum([2, 3, 6, 7], 7)  # [1, 2] [2,3,5] [2, 3, 6, 7]
     print(results)
 
 

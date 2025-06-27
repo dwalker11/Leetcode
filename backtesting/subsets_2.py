@@ -2,16 +2,16 @@ from typing import List
 
 
 def subsetsWithDup(nums: List[int]) -> List[List[int]]:
-    results = [[]]
+    results = []
 
     nums.sort()
 
     def dfs(i, subset):
         if i == len(nums):
+            results.append(subset.copy())
             return
 
         subset.append(nums[i])
-        results.append(subset.copy())
 
         dfs(i+1, subset)
 

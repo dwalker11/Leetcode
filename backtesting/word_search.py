@@ -1,11 +1,16 @@
-from typing import List
+from typing import List, Tuple
 
 
 def exists(board: List[List[str]], word: str) -> bool:
-    def findWord(direction: str, row: int, col: int, substring: str) -> bool:
+    ROWS, COLS = len(board), len(board[0])
+    visited = set()
+
+    def findWord(direction: str, coords: Tuple[int, int], substring: str) -> bool:
         # Base cases
         if len(substring) == len(word):
             return True
+
+        row, col = coords
 
         if row < 0 or row >= len(board) or col < 0 or col >= len(board[row]):
             return False
@@ -13,41 +18,42 @@ def exists(board: List[List[str]], word: str) -> bool:
         i = len(substring)
         current, target = board[row][col], word[i]
 
-        if current != target and substring != "":
+        if current != target:
             return False
 
         # General cases
+        visited.add(coords)
 
-        # 1 - We don't have a match
-        while current != target:
-            # keep advancing on the current row unless we're at the last character
-            if col == len(board[row]) - 1:
-                col, row = 0, row + 1
-            else:
-                col += 1
-
-            if row == len(board):
-                return False
-
-            if findWord(direction, row, col, substring):
+        new_coords = (coords[0], coords[1]+1)  # Move right
+        if new_coords not in visited and direction != "r":
+            if findWord("l", new_coords, substring+current):
                 return True
 
-        # 2 - We have a match
-        if direction != "r" and findWord("l", row, col+1, substring+current):
-            return True
+        new_coords = (coords[0], coords[1]-1)  # Move left
+        if new_coords not in visited and direction != "l":
+            if findWord("r", new_coords, substring+current):
+                return True
 
-        if direction != "l" and findWord("r", row, col-1, substring+current):
-            return True
+        new_coords = (coords[0]+1, coords[1])  # Move down
+        if new_coords not in visited and direction != "d":
+            if findWord("u", new_coords, substring+current):
+                return True
 
-        if direction != "d" and findWord("u", row+1, col, substring+current):
-            return True
+        new_coords = (coords[0]-1, coords[1])  # Move up
+        if new_coords not in visited and direction != "u":
+            if findWord("d", new_coords, substring+current):
+                return True
 
-        if direction != "u" and findWord("d", row-1, col, substring+current):
-            return True
+        visited.remove(coords)
 
         return False
 
-    return findWord("", 0, 0, "")
+    for i in range(ROWS):
+        for j in range(COLS):
+            if findWord("", (i, j), ""):
+                return True
+
+    return False
 
 
 def main():
@@ -61,6 +67,14 @@ def main():
 
     result = exists([["A", "B", "C", "E"], ["S", "F", "C", "S"], [
                     "A", "D", "E", "E"]], "ABCB")
+    print(result)
+
+    result = exists([["a", "a", "a", "a"], ["a", "a", "a", "a"], [
+                    "a", "a", "a", "a"]], "aaaaaaaaaaaaa")
+    print(result)
+
+    result = exists([["a", "a", "a"], ["A", "A", "A"],
+                    ["a", "a", "a"]], "aAaaaAaaA")
     print(result)
 
 

@@ -10,6 +10,9 @@ def exists(board: List[List[str]], word: str) -> bool:
         if len(substring) == len(word):
             return True
 
+        if coords in visited:
+            return False
+
         row, col = coords
 
         if row < 0 or row >= len(board) or col < 0 or col >= len(board[row]):
@@ -17,7 +20,6 @@ def exists(board: List[List[str]], word: str) -> bool:
 
         i = len(substring)
         current, target = board[row][col], word[i]
-
         if current != target:
             return False
 
@@ -25,24 +27,20 @@ def exists(board: List[List[str]], word: str) -> bool:
         visited.add(coords)
 
         new_coords = (coords[0], coords[1]+1)  # Move right
-        if new_coords not in visited and direction != "r":
-            if findWord("l", new_coords, substring+current):
-                return True
+        if direction != "r" and findWord("l", new_coords, substring+current):
+            return True
 
         new_coords = (coords[0], coords[1]-1)  # Move left
-        if new_coords not in visited and direction != "l":
-            if findWord("r", new_coords, substring+current):
-                return True
+        if direction != "l" and findWord("r", new_coords, substring+current):
+            return True
 
         new_coords = (coords[0]+1, coords[1])  # Move down
-        if new_coords not in visited and direction != "d":
-            if findWord("u", new_coords, substring+current):
-                return True
+        if direction != "d" and findWord("u", new_coords, substring+current):
+            return True
 
         new_coords = (coords[0]-1, coords[1])  # Move up
-        if new_coords not in visited and direction != "u":
-            if findWord("d", new_coords, substring+current):
-                return True
+        if direction != "u" and findWord("d", new_coords, substring+current):
+            return True
 
         visited.remove(coords)
 

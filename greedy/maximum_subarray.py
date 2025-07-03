@@ -2,19 +2,24 @@ from typing import List
 
 
 def maxSubArray(nums: List[int]) -> int:
-    max_sum = sum(nums)
+    i, j = 0, 1
 
-    i, j = 0, len(nums) - 1
-    while i != j:
-        if (nums[i] < nums[j]):
-            i += 1
-        else:
-            j -= 1
+    max_sum = nums[i]
 
-        new_sum = sum(nums[i:j+1])
+    while j < len(nums):
+        new_sum, val = sum(nums[i:j+1]), nums[j]
 
-        if new_sum > max_sum:
+        if max_sum <= val and new_sum <= val:
+            i, new_sum = j, nums[j]
+
+        if new_sum == max_sum:
+            i = j - 1
+            while i >= 0 and sum(nums[i:j+1]) != max_sum:
+                i -= 1
+        elif new_sum > max_sum:
             max_sum = new_sum
+
+        j += 1
 
     return max_sum
 

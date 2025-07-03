@@ -1,40 +1,31 @@
 from typing import List
 
 
-def is_palindrome(s: str) -> bool:
-    l, r = 0, len(s) - 1
-
+def is_palindrome(s: str, l: int, r: int) -> bool:
     while l < r:
         if s[l] != s[r]:
             return False
-        l += 1
-        r -= 1
+        l, r = l + 1, r - 1
 
     return True
 
 
 def partition(s: str) -> List[List[str]]:
-    results = [[c for c in s]]
+    results = []
+    partition = []
 
-    def backtrack(s, r, flip=False):
-        if len(s) == 1:
+    def dfs(i):
+        if i == len(s):
+            results.append(partition.copy())
             return
 
-        if is_palindrome(s):
-            if flip:
-                results.append(r + [s])
-            else:
-                results.append([s] + r)
+        for j in range(i, len(s)):
+            if is_palindrome(s, i, j):
+                partition.append(s[i:j+1])
+                dfs(j + 1)
+                partition.pop()
 
-        l, r = 1, len(s) - 1
-
-        subject, rest = s[:r], s[r:]
-        backtrack(subject, [rest])
-
-        subject, rest = s[l:], s[:l]
-        backtrack(subject, [rest], True)
-
-    backtrack(s, [], 0)
+    dfs(0)
 
     return results
 
@@ -50,6 +41,9 @@ def main():
     print(result)
 
     result = partition("ab")
+    print(result)
+
+    result = partition("abbab")
     print(result)
 
 

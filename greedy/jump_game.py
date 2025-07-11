@@ -2,28 +2,27 @@ from typing import List
 
 
 def canJump(nums: List[int]) -> bool:
-    lookup = {i: [] for i in range(len(nums))}
+    if len(nums) == 1:
+        return True
 
-    # build a hash of reachable elements
-    for i, n in enumerate(nums):
-        if i == len(nums) - 1:
+    start, end = 0, len(nums) - 1
+
+    curr = start
+    max_jump_distance = nums[curr]
+
+    while True:
+        if max_jump_distance == 0:
             break
-        for j in range(n):
-            pos = i + 1 + j
-            if pos < len(nums):
-                lookup.get(pos).append(i)
 
-    def is_reachable(idx):
-        if idx == 0:
+        new_position = curr + max_jump_distance
+
+        if new_position >= end:
             return True
 
-        if not lookup[idx]:
-            return False
+        curr = new_position
+        max_jump_distance = nums[curr]
 
-        new_idx = min(lookup[idx])
-        return True if is_reachable(new_idx) else False
-
-    return is_reachable(len(nums) - 1)
+    return False
 
 
 def main():

@@ -2,27 +2,28 @@ from typing import List
 
 
 def canJump(nums: List[int]) -> bool:
-    def recurse(idx):
+    lookup = {i: [] for i in range(len(nums))}
+
+    # build a hash of reachable elements
+    for i, n in enumerate(nums):
+        if i == len(nums) - 1:
+            break
+        for j in range(n):
+            pos = i + 1 + j
+            if pos < len(nums):
+                lookup.get(pos).append(i)
+
+    def is_reachable(idx):
         if idx == 0:
             return True
 
-        reachable = []
+        if not lookup[idx]:
+            return False
 
-        # save every index that's reachable from idx
-        for i in range(idx - 1, -1, -1):
-            val = nums[i]
-            if val >= idx - i:
-                reachable.append(i)
+        new_idx = min(lookup[idx])
+        return True if is_reachable(new_idx) else False
 
-        # pop an element off of the reachable list and call recurse with it
-        while reachable:
-            j = reachable.pop()
-            if recurse(j):
-                return True
-
-        return False
-
-    return recurse(len(nums) - 1)
+    return is_reachable(len(nums) - 1)
 
 
 def main():

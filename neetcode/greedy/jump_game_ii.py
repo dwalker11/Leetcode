@@ -17,19 +17,25 @@ from typing import List
 
 
 def jump(nums: List[int]) -> int:
-    n = len(nums)
-    jump_count = 0
+    distances = []
+    goal = len(nums) - 1
 
-    for i in range(n - 2, -1, -1):
-        distance = (n - 1) - i
-        jump = nums[i]
+    for pos in range(goal - 1, -1, -1):
+        distance_from_goal = goal - (pos + nums[pos])
 
-        if 0 < jump < distance:
-            jump_count += 1
-        else:
-            jump_count = 1
+        if distance_from_goal < 0:
+            distance_from_goal = 0
 
-    return jump_count
+        # skip until we find the first position that can reach the goal
+        if not distances and distance_from_goal != 0:
+            continue
+
+        while distances and distance_from_goal <= distances[-1]:
+            distances.pop()
+
+        distances.append(distance_from_goal)
+
+    return len(distances)
 
 
 def main():
